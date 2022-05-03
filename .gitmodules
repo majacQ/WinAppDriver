@@ -1,0 +1,3 @@
+[submodule "ApplicationUnderTests/Xaml-Controls-Gallery"]
+	path = ApplicationUnderTests/Xaml-Controls-Gallery
+	url = https://github.com/microsoft/Xaml-Controls-Gallery.git
