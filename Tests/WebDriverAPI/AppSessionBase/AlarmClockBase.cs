@@ -39,7 +39,7 @@ namespace WebDriverAPI
                 Assert.IsNotNull(session.SessionId);
 
                 // Set implicit timeout to 2.5 seconds to make element search to retry every 500 ms for at most five times
-                session.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2.5));
+                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2.5);
 
                 // Initialize touch screen object
                 touchScreen = new RemoteTouchScreen(session);
@@ -63,25 +63,15 @@ namespace WebDriverAPI
         [TestInitialize]
         public virtual void TestInit()
         {
-            // Attempt to go back to the main page in case Alarm & Clock app is started in EditAlarm view
+            // Attempt to go back to the main page in case Alarms & Clock app is started in EditAlarm view
             try
             {
                 alarmTabElement = session.FindElementByAccessibilityId("AlarmPivotItem");
             }
             catch
             {
-                session.Navigate().Back();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-
-                try
-                {
-                    alarmTabElement = session.FindElementByAccessibilityId("AlarmPivotItem");
-                }
-                catch
-                {
-                    session.FindElementByAccessibilityId("Back").Click(); // Press back button if navigating back somehow failed
-                    alarmTabElement = session.FindElementByAccessibilityId("AlarmPivotItem");
-                }
+                DismissAddAlarmPage();
+                alarmTabElement = session.FindElementByAccessibilityId("AlarmPivotItem");
             }
 
             Assert.IsNotNull(alarmTabElement);
@@ -107,6 +97,7 @@ namespace WebDriverAPI
                 {
                     var alarmEntry = session.FindElementByXPath($"//ListItem[starts-with(@Name, \"{alarmName}\")]");
                     session.Mouse.ContextClick(alarmEntry.Coordinates);
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
                     session.FindElementByName("Delete").Click();
                 }
                 catch
@@ -143,9 +134,37 @@ namespace WebDriverAPI
             session.FindElementByAccessibilityId("AddAlarmButton").Click();
             Thread.Sleep(TimeSpan.FromSeconds(0.5));
             WindowsElement staleElement = session.FindElementByAccessibilityId("AlarmSaveButton");
-            session.Navigate().Back(); // Dismiss add alarm page
+            DismissAddAlarmPage();
             Thread.Sleep(TimeSpan.FromSeconds(2));
             return staleElement;
+        }
+
+        protected static void DismissAddAlarmPage()
+        {
+            try
+            {
+                session.FindElementByAccessibilityId("CancelButton").Click(); // Press cancel button to dismiss any non-main page
+            }
+            catch
+            {
+                session.FindElementByAccessibilityId("Back").Click(); // Press back button if cancel button above somehow failed
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                session.DismissAlarmDialogIfThere();
+            }
+        }
+
+        protected static WindowsElement FindAppTitleBar()
+        {
+            WindowsElement element;
+            try
+            {
+                element = session.FindElementByAccessibilityId("AppName");
+            }
+            catch (InvalidOperationException)
+            {
+                element = session.FindElementByAccessibilityId("TitleBar");
+            }
+            return element;
         }
     }
 }

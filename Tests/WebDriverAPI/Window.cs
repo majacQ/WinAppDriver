@@ -52,6 +52,7 @@ namespace WebDriverAPI
 
             // Delete the session
             session.Quit();
+            session = null;
         }
 
         [TestMethod]
@@ -129,8 +130,11 @@ namespace WebDriverAPI
             List<string> previouslyOpenedEdgeWindows = new List<string>(windowHandlesBefore);
             previouslyOpenedEdgeWindows.Remove(session.CurrentWindowHandle);
 
-            // Open a new window
-            session.Keyboard.SendKeys(Keys.Control + "n" + Keys.Control);
+            // Set focus on itself
+            session.SwitchTo().Window(session.CurrentWindowHandle);
+
+            // Open a new window in private mode
+            session.Keyboard.SendKeys(Keys.Control + Keys.Shift + "p" + Keys.Shift + Keys.Control);
             Thread.Sleep(TimeSpan.FromSeconds(3));
             var windowHandlesAfter = session.WindowHandles;
             Assert.IsNotNull(windowHandlesAfter);
@@ -160,8 +164,11 @@ namespace WebDriverAPI
             List<string> previouslyOpenedEdgeWindows = new List<string>(session.WindowHandles);
             previouslyOpenedEdgeWindows.Remove(session.CurrentWindowHandle);
 
-            // Open a new window
-            session.Keyboard.SendKeys(Keys.Control + "n" + Keys.Control);
+            // Set focus on itself
+            session.SwitchTo().Window(session.CurrentWindowHandle);
+
+            // Open a new window in private mode
+            session.Keyboard.SendKeys(Keys.Control + Keys.Shift + "p" + Keys.Shift + Keys.Control);
             Thread.Sleep(TimeSpan.FromSeconds(3));
             var multipleWindowHandles = session.WindowHandles;
             Assert.IsTrue(multipleWindowHandles.Count > 1);

@@ -41,8 +41,8 @@ namespace WebDriverAPI
         public void NavigateForward_Browser()
         {
             session = Utility.CreateNewSession(CommonTestSettings.EdgeAppId, "-private " + CommonTestSettings.EdgeAboutFlagsURL);
-            session.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2));
-            Thread.Sleep(TimeSpan.FromSeconds(2));
+            session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+            Thread.Sleep(TimeSpan.FromSeconds(3));
             var originalTitle = session.Title;
             Assert.AreNotEqual(string.Empty, originalTitle);
 
@@ -79,10 +79,12 @@ namespace WebDriverAPI
 
             // Navigate back to the original folder
             session.Navigate().Back();
+            Thread.Sleep(TimeSpan.FromSeconds(1));
             Assert.AreEqual(originalTitle, session.Title);
 
             // Navigate forward to the target folder
             session.Navigate().Forward();
+            Thread.Sleep(TimeSpan.FromSeconds(1));
             Assert.AreEqual(newTitle, session.Title);
         }
 
