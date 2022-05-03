@@ -41,7 +41,7 @@ namespace WebDriverAPI
         public void NavigateBack_Browser()
         {
             session = Utility.CreateNewSession(CommonTestSettings.EdgeAppId, "-private " + CommonTestSettings.EdgeAboutFlagsURL);
-            session.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
+            session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
             Thread.Sleep(TimeSpan.FromSeconds(2.5));
             var originalTitle = session.Title;
             Assert.AreNotEqual(string.Empty, originalTitle);
@@ -62,10 +62,11 @@ namespace WebDriverAPI
         public void NavigateBack_ModernApp()
         {
             session = Utility.CreateNewSession(CommonTestSettings.AlarmClockAppId);
-            session.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
+            session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
 
             // Ensure alarms & clock are in Alarm Pivot view
             session.Navigate().Back();
+            session.DismissAlarmDialogIfThere();
             session.FindElementByAccessibilityId("AlarmPivotItem").Click();
 
             // Navigate to New Alarm view
@@ -74,6 +75,7 @@ namespace WebDriverAPI
 
             // Navigate back to the original view
             session.Navigate().Back();
+            session.DismissAlarmDialogIfThere();
             Assert.IsNotNull(session.FindElementByAccessibilityId("AlarmPivotItem"));
         }
 

@@ -123,6 +123,7 @@ Below are the capabilities that can be used to create Windows Application Driver
 | POST   	| /session                                          	|
 | GET    	| /sessions                                         	|
 | DELETE 	| /session/:sessionId                               	|
+| POST   	| /session/:sessionId/actions (v1.1 RC)         	|
 | POST   	| /session/:sessionId/appium/app/launch             	|
 | POST   	| /session/:sessionId/appium/app/close              	|
 | POST   	| /session/:sessionId/back                          	|
@@ -214,7 +215,7 @@ Windows Application Driver is integrated with Appium, meaning if you use Appium 
 2. To create multiple sessions with one Appium server you need Appium 1.6.4 or newer
 3. When pointing a test at Appium you need to include `/wd/hub` on the server URI. E.g. `http://127.0.0.1:4723/wd/hub`
 
-For more details visit the Appium documentation: <http://appium.io/slate/en/master/?ruby#windows-application-ui-testing>
+For more details visit the Appium documentation: <https://appium.io/docs/en/drivers/windows/>
 
 
 ## Vote on New Features
